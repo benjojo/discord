@@ -50,6 +50,8 @@ namespace AgopBot
 
         public static void InitAll()
         {
+            Add(new CmdAfk("afk"));
+            Add(new CmdInfo("info"));
             Add(new CmdTime("time"));
             Add(new CmdQuit("quit"));
         }

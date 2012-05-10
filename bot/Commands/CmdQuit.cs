@@ -9,7 +9,8 @@ namespace AgopBot
 
         public override void Use(SteamID Room, SteamID Sender, string[] args)
         {
-            Steam.Shutdown();
+            Chat.Send(Room, "I can't let you do that " + Steam.Friends.GetFriendPersonaName(Sender) + "!");
+            //Steam.Shutdown();
         }
     }
 }
