@@ -16,20 +16,17 @@ namespace AgopBot
             Steam.AuthCode = "";
             Steam.Connect();
 
-            bool isComplete = false;
-
+            Console.TreatControlCAsInput = false;
             Console.CancelKeyPress += (object s, ConsoleCancelEventArgs e) =>
             {
-                isComplete = true;
+                Steam.Shutdown();
             };
 
-            while (!isComplete)
+            while (!Steam.ShouldQuit)
             {
                 Steam.Update();
                 Thread.Sleep(1);
             }
-
-            Steam.Shutdown();
         }
     }
 }

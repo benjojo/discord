@@ -12,6 +12,8 @@ namespace AgopBot
 
     internal static class Steam
     {
+        public static bool ShouldQuit = false;
+
         public static SteamClient Client { get; private set; }
 
         public static SteamFriends Friends { get; private set; }
@@ -77,6 +79,8 @@ namespace AgopBot
         {
             User.LogOff();
             Client.Disconnect();
+
+            ShouldQuit = true;
         }
     }
 }

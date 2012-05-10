@@ -9,6 +9,7 @@ namespace AgopBot
     {
         public Chat()
         {
+            ChatCommands.InitAll();
             Steam.AddHandler(this);
         }
 
@@ -58,8 +59,18 @@ namespace AgopBot
         public static void HandleChatMessage(SteamFriends.ChatMsgCallback msg)
         {
             SteamID Sender = msg.ChatterID;
-            String SenderName = Steam.Friends.GetFriendPersonaName(Sender);
             SteamID Room = msg.ChatRoomID;
+            String Message = msg.Message;
+
+            if (Message.StartsWith("sudo"))
+            {
+                string[] args = Message.Substring(4).Split(' ');
+
+                if ((args.Length == 0))
+                    Send(Room, ">> No command specified.");
+                else
+                    ChatCommands.HandleChatCommand(Room, Sender, args);
+            }
         }
 
         public static void HandlePersonaStateChange(SteamFriends.PersonaStateCallback msg)
