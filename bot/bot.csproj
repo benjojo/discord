@@ -8,10 +8,11 @@
     <ProjectGuid>{7E7EF1F2-283B-4865-AB0B-1DBE492CC06A}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>bot</RootNamespace>
+    <RootNamespace>AgopBot</RootNamespace>
     <AssemblyName>bot</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
@@ -81,6 +82,9 @@
     <Content Include="lib\SteamKit2.dll" />
     <Content Include="lib\SteamKit2.pdb" />
     <Content Include="lib\SteamKit2.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

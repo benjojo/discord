@@ -45,8 +45,8 @@ namespace AgopBot
         {
             Steam.Friends.SetPersonaName("AgopBot");
             Steam.Friends.SetPersonaState(EPersonaState.Online);
-            Join(103582791430091926);
-            //Join(103582791433166824);
+            //Join(103582791430091926);
+            Join(103582791433166824);
         }
 
         public static void HandleLogoff(SteamUser.LoggedOffCallback msg)
