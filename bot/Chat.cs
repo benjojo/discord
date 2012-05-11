@@ -37,13 +37,16 @@ namespace AgopBot
                 HandleChatMessage((SteamFriends.ChatMsgCallback)msg);
             if (msg.IsType<SteamFriends.PersonaStateCallback>())
                 HandlePersonaStateChange((SteamFriends.PersonaStateCallback)msg);
+            if (msg.IsType<SteamFriends.ChatMemberInfoCallback>())
+                HandleChatMemberInfoCallback((SteamFriends.ChatMemberInfoCallback)msg);
         }
 
         public static void HandleLogin(SteamUser.LoginKeyCallback msg)
         {
             Steam.Friends.SetPersonaName("AgopBot");
             Steam.Friends.SetPersonaState(EPersonaState.Online);
-            Join(103582791433166824);
+            Join(103582791430091926);
+            //Join(103582791433166824);
         }
 
         public static void HandleLogoff(SteamUser.LoggedOffCallback msg)
@@ -62,6 +65,8 @@ namespace AgopBot
             SteamID Room = msg.ChatRoomID;
             String Message = msg.Message;
 
+            Console.WriteLine(Steam.Friends.GetFriendPersonaName(Sender) + ": " + Message);
+
             if (Message.StartsWith("sudo"))
             {
                 string[] args = Message.Substring(4).Split(' ');
@@ -71,6 +76,16 @@ namespace AgopBot
                 else
                     ChatCommands.HandleChatCommand(Room, Sender, args);
             }
+        }
+
+        private static void HandleChatMemberInfoCallback(SteamFriends.ChatMemberInfoCallback msg)
+        {
+            SteamID Room = msg.ChatRoomID;
+
+            Console.WriteLine("ChatMemberInfoCallback: " +
+                   Steam.Friends.GetFriendPersonaName(msg.StateChangeInfo.ChatterActedBy) + " - " +
+                   Steam.Friends.GetFriendPersonaName(msg.StateChangeInfo.ChatterActedOn)
+                   );
         }
 
         public static void HandlePersonaStateChange(SteamFriends.PersonaStateCallback msg)
