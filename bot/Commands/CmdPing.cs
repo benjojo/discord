@@ -12,7 +12,9 @@ namespace AgopBot.Commands
             try
             {
                 Ping pingSender = new Ping();
-                PingReply reply = pingSender.Send(string.Join(" ", args));
+                string constring = string.Join(" ", args);
+                System.Console.WriteLine(constring);
+                PingReply reply = pingSender.Send(constring);
 
                 if (reply != null)
                 {
@@ -22,9 +24,9 @@ namespace AgopBot.Commands
                         Chat.Send(room, string.Format("Error pinging [{0}]: {1}", reply.Address, reply.Status));
                 }
             }
-            catch
+            catch (System.Exception ex)
             {
-                Chat.Send(room, "Messed up!");
+                Chat.Send(room, "Messed up! [ " + ex.Message + " ]");
             }
         }
     }

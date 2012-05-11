@@ -38,12 +38,12 @@ namespace AgopBot
 
         public static void HandleChatCommand(SteamID room, SteamID sender, string[] args)
         {
-            Command command = Find(args[1]);
+            Command command = Find(args[0]);
 
             if (command == null)
-                Chat.Send(room, "Sorry '" + Steam.Friends.GetFriendPersonaName(sender) + "'! The command '" + args[1] + "' is unrecognized.");
+                Chat.Send(room, "Sorry '" + Steam.Friends.GetFriendPersonaName(sender) + "'! The command '" + args[0] + "' is unrecognized.");
             else
-                command.Use(room, sender, args);
+                command.Use(room, sender, args.Skip(1).ToArray());
         }
 
         public static void InitAll()

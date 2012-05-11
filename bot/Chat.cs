@@ -69,9 +69,9 @@ namespace AgopBot
 
             if (Message.StartsWith("sudo"))
             {
-                string[] args = Message.Substring(4).Split(' ');
+                string[] args = Message.Substring(4).Trim().Split(' ');
 
-                if ((args.Length <= 1))
+                if ((args.Length == 0))
                     Send(Room, "No command specified.");
                 else
                     ChatCommands.HandleChatCommand(Room, Sender, args);
