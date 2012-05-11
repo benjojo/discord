@@ -13,8 +13,8 @@ namespace AgopBot
         {
             SQL.DB.Initialize("localhost", "agop", "root", "root");
           
-            Steam.Username = "TF2GUY1001";//args[0];
-            Steam.Password = "TF2GUY1996";//args[1];
+            Steam.Username = args[0];
+            Steam.Password = args[1];
             Steam.AuthCode = "";
             Steam.Connect();
 

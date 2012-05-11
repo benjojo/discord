@@ -71,8 +71,8 @@ namespace AgopBot
             {
                 string[] args = Message.Substring(4).Split(' ');
 
-                if ((args.Length == 0))
-                    Send(Room, ">> No command specified.");
+                if ((args.Length <= 1))
+                    Send(Room, "No command specified.");
                 else
                     ChatCommands.HandleChatCommand(Room, Sender, args);
             }
