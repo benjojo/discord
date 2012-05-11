@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using SteamKit2;
 
 namespace AgopBot
 {
@@ -19,10 +15,7 @@ namespace AgopBot
             Steam.Connect();
 
             Console.TreatControlCAsInput = false;
-            Console.CancelKeyPress += (object s, ConsoleCancelEventArgs e) =>
-            {
-                Steam.Shutdown();
-            };
+            Console.CancelKeyPress += (s, e) => Steam.Shutdown();
 
             while (!Steam.ShouldQuit)
             {
