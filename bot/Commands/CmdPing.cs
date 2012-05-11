@@ -15,15 +15,22 @@ namespace bot.Commands
 
         public override void Use(SteamID Room, SteamID Sender, string[] args)
         {
-            Ping pingSender = new Ping();
-            PingReply reply = pingSender.Send(string.Join(" ", args));
-
-            if (reply != null)
+            try
             {
-                if (reply.Status == IPStatus.Success)
-                    Chat.Send(Room, string.Format("Address [{0}] responded in {1} ms!", reply.Address, reply.RoundtripTime));
-                else
-                    Chat.Send(Room, string.Format("Error pinging [{0}]: {1}", reply.Address, reply.Status));
+                Ping pingSender = new Ping();
+                PingReply reply = pingSender.Send(string.Join(" ", args));
+
+                if (reply != null)
+                {
+                    if (reply.Status == IPStatus.Success)
+                        Chat.Send(Room, string.Format("Address [{0}] responded in {1} ms!", reply.Address, reply.RoundtripTime));
+                    else
+                        Chat.Send(Room, string.Format("Error pinging [{0}]: {1}", reply.Address, reply.Status));
+                }
+            }
+            catch
+            {
+                Chat.Send(Room, "Messed up!");
             }
         }
     }
