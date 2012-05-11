@@ -8,7 +8,7 @@ namespace AgopBot
     {
         public CmdInfo(string name) : base(name) { }
 
-        public override void Use(SteamID Room, SteamID Sender, string[] args)
+        public override void Use(SteamID Room, SteamID Sender, string[] args, bool isAdmin)
         {
             TimeSpan tp = Process.GetCurrentProcess().TotalProcessorTime;
             TimeSpan up = (DateTime.Now - Process.GetCurrentProcess().StartTime);

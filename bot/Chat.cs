@@ -5,8 +5,15 @@ using SteamKit2;
 
 namespace AgopBot
 {
-    class Chat : ICallbackHandler
+    internal class Chat : ICallbackHandler
     {
+        public static List<SteamID> Admins = new List<SteamID>
+        {
+            new SteamID("65232862"), //Naarkie
+            new SteamID("36593391"), //Matt
+            new SteamID("30067610") //Dlaor
+        };
+
         public Chat()
         {
             ChatCommands.InitAll();
@@ -45,8 +52,8 @@ namespace AgopBot
         {
             Steam.Friends.SetPersonaName("AgopBot");
             Steam.Friends.SetPersonaState(EPersonaState.Online);
-            Join(103582791430091926);
-            //Join(103582791433166824);
+            //Join(103582791430091926);
+            Join(103582791433166824);
         }
 
         public static void HandleLogoff(SteamUser.LoggedOffCallback msg)
@@ -66,15 +73,16 @@ namespace AgopBot
             String Message = msg.Message;
 
             Console.WriteLine(Steam.Friends.GetFriendPersonaName(Sender) + ": " + Message);
-
             if (Message.StartsWith("sudo"))
             {
                 string[] args = Message.Substring(4).Split(' ');
-
                 if ((args.Length <= 1))
                     Send(Room, "No command specified.");
                 else
-                    ChatCommands.HandleChatCommand(Room, Sender, args);
+                    if (Admins.Contains(Sender))
+                        ChatCommands.HandleChatCommand(Room, Sender, args, true);
+                    else
+                        ChatCommands.HandleChatCommand(Room, Sender, args, false);
             }
         }
 
@@ -90,7 +98,6 @@ namespace AgopBot
 
         public static void HandlePersonaStateChange(SteamFriends.PersonaStateCallback msg)
         {
-            
         }
     }
 }

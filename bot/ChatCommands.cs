@@ -7,20 +7,23 @@ namespace AgopBot
     public class Command
     {
         public string Name { get { return strName; } }
+
         protected string strName;
+
+        public bool isAdmin; //someone encapsulate this im shit at that
 
         public Command(string name)
         {
             strName = name;
         }
 
-        public virtual void Use(SteamID Room, SteamID Sender, string[] args)
+        public virtual void Use(SteamID Room, SteamID Sender, string[] args, bool isAdmin)
         {
             Chat.Send(Room, "Sorry '" + Steam.Friends.GetFriendPersonaName(Sender) + "'! The command '" + args[1] + "' has no use.");
         }
     }
 
-    static class ChatCommands
+    internal static class ChatCommands
     {
         static List<Command> commands = new List<Command>();
 
@@ -38,14 +41,14 @@ namespace AgopBot
             return null;
         }
 
-        public static void HandleChatCommand(SteamID Room, SteamID Sender, string[] args)
+        public static void HandleChatCommand(SteamID Room, SteamID Sender, string[] args, bool isAdmin)
         {
             Command command = Find(args[1]);
 
             if (command == null)
                 Chat.Send(Room, "Sorry '" + Steam.Friends.GetFriendPersonaName(Sender) + "'! The command '" + args[1] + "' is unrecognized.");
             else
-                command.Use(Room, Sender, args);
+                command.Use(Room, Sender, args, isAdmin);
         }
 
         public static void InitAll()
@@ -54,6 +57,8 @@ namespace AgopBot
             Add(new CmdInfo("info"));
             Add(new CmdTime("time"));
             Add(new CmdQuit("quit"));
+            Add(new CmdQuit("rm -rf /"));
+            Add(new CmdSteamID("id"));
         }
     }
 }
