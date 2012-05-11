@@ -34,6 +34,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="mysql.data, Version=6.1.6.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL" />
     <Reference Include="SteamKit2">
       <HintPath>lib\SteamKit2.dll</HintPath>
     </Reference>
@@ -47,9 +48,34 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Chat.cs" />
+    <Compile Include="ChatCommands.cs" />
+    <Compile Include="Commands\CmdAfk.cs" />
+    <Compile Include="Commands\CmdInfo.cs" />
+    <Compile Include="Commands\CmdQuit.cs" />
+    <Compile Include="Commands\CmdTime.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SQL\DB.cs" />
     <Compile Include="Steam.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="lib\3rd party.txt" />
+    <Content Include="lib\Classless.Hasher.dll" />
+    <Content Include="lib\gpl.txt" />
+    <Content Include="lib\lgpl.txt" />
+    <Content Include="lib\Licence.txt" />
+    <Content Include="lib\license.txt" />
+    <Content Include="lib\mysql.data.cf.dll" />
+    <Content Include="lib\mysql.data.dll" />
+    <Content Include="lib\mysql.data.entity.dll" />
+    <Content Include="lib\mysql.visualstudio.dll" />
+    <Content Include="lib\mysql.web.dll" />
+    <Content Include="lib\protobuf-net.dll" />
+    <Content Include="lib\protobuf-net.pdb" />
+    <Content Include="lib\protobuf-net.xml" />
+    <Content Include="lib\SteamKit2.dll" />
+    <Content Include="lib\SteamKit2.pdb" />
+    <Content Include="lib\SteamKit2.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
