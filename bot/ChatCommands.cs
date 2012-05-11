@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using AgopBot.Commands;
 using SteamKit2;
-using bot.Commands;
 
 namespace AgopBot
 {
