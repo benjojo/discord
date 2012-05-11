@@ -2,24 +2,25 @@
 using System.Diagnostics;
 using SteamKit2;
 
-namespace AgopBot
+namespace AgopBot.Commands
 {
     public class CmdInfo : Command
     {
-        public CmdInfo(string name) : base(name) { }
+        public CmdInfo() : base("info") { }
 
-        public override void Use(SteamID Room, SteamID Sender, string[] args)
+        public override void Use(SteamID room, SteamID sender, string[] args)
         {
             TimeSpan tp = Process.GetCurrentProcess().TotalProcessorTime;
             TimeSpan up = (DateTime.Now - Process.GetCurrentProcess().StartTime);
 
-            string MemoryUsage = "Memory Usage: " + Math.Round((double)Process.GetCurrentProcess().PrivateMemorySize64 / 1048576).ToString() + " Megabytes";
+            int megabytes = (int)Math.Round(Process.GetCurrentProcess().PrivateMemorySize64 / 1024f / 1024f);
+            string MemoryUsage = "Memory Usage: " + megabytes.ToString() + " Megabytes"; 
             string Uptime = "Uptime: " + up.Days + " Days " + up.Hours + " Hours " + up.Minutes + " Minutes " + up.Seconds + " Seconds";
 
-            Chat.Send(Room, "~~ AgopBot ~~");
-            Chat.Send(Room, "Contribute here: https://github.com/iRzilla/AgopBot");
-            Chat.Send(Room, Uptime);
-            Chat.Send(Room, MemoryUsage);
+            Chat.Send(room, "~~ AgopBot ~~");
+            Chat.Send(room, "Contribute here: https://github.com/iRzilla/AgopBot");
+            Chat.Send(room, Uptime);
+            Chat.Send(room, MemoryUsage);
         }
     }
 }

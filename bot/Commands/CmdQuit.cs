@@ -1,16 +1,16 @@
 ﻿using System;
 using SteamKit2;
 
-namespace AgopBot
+namespace AgopBot.Commands
 {
     public class CmdQuit : Command
     {
-        public CmdQuit(string name) : base(name) { }
+        public CmdQuit() : base("quit") { }
 
-        public override void Use(SteamID Room, SteamID Sender, string[] args)
+        public override void Use(SteamID room, SteamID sender, string[] args)
         {
-            if (Sender.AccountID != 18296695)
-                Chat.Send(Room, "I can't let you do that " + Sender.AccountID + "!");
+            if (sender.AccountID != 18296695)
+                Chat.Send(room, "I can't let you do that " + sender.AccountID + "!");
             else
                 Steam.Shutdown();
         }

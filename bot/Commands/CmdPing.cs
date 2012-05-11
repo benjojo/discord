@@ -1,19 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.NetworkInformation;
-using System.Text;
-using AgopBot;
+﻿using System.Net.NetworkInformation;
 using SteamKit2;
 
-namespace bot.Commands
+namespace AgopBot.Commands
 {
     class CmdPing : Command
     {
-        public CmdPing(string name) : base(name) { }
+        public CmdPing() : base("ping") { }
 
-        public override void Use(SteamID Room, SteamID Sender, string[] args)
+        public override void Use(SteamID room, SteamID sender, string[] args)
         {
             try
             {
@@ -23,14 +17,14 @@ namespace bot.Commands
                 if (reply != null)
                 {
                     if (reply.Status == IPStatus.Success)
-                        Chat.Send(Room, string.Format("Address [{0}] responded in {1} ms!", reply.Address, reply.RoundtripTime));
+                        Chat.Send(room, string.Format("Address [{0}] responded in {1} ms!", reply.Address, reply.RoundtripTime));
                     else
-                        Chat.Send(Room, string.Format("Error pinging [{0}]: {1}", reply.Address, reply.Status));
+                        Chat.Send(room, string.Format("Error pinging [{0}]: {1}", reply.Address, reply.Status));
                 }
             }
             catch
             {
-                Chat.Send(Room, "Messed up!");
+                Chat.Send(room, "Messed up!");
             }
         }
     }
