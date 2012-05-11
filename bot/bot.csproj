@@ -51,6 +51,7 @@
     <Compile Include="ChatCommands.cs" />
     <Compile Include="Commands\CmdAfk.cs" />
     <Compile Include="Commands\CmdInfo.cs" />
+    <Compile Include="Commands\CmdPing.cs" />
     <Compile Include="Commands\CmdQuit.cs" />
     <Compile Include="Commands\CmdTime.cs" />
     <Compile Include="Program.cs" />
