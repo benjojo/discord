@@ -25,8 +25,6 @@ namespace AgopBot.Commands
                                       });
 
             T.Start();
-
-            Chat.Send(room, "Awaiting CleverBot response...");
         }
     }
 }

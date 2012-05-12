@@ -1,7 +1,7 @@
 ﻿using System;
 using SteamKit2;
 
-namespace AgopBot
+namespace AgopBot.Commands
 {
     public class CmdSteamID : Command
     {

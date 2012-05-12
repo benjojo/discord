@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using AgopBot.Commands;
 using SteamKit2;
 
@@ -54,18 +55,24 @@ namespace AgopBot
 
         public static void InitAll()
         {
-            Add(new CmdAfk());
-            Add(new CmdInfo());
-            Add(new CmdTime());
-            Add(new CmdQuit());
-            Add(new CmdPing());
-            Add(new CmdKick());
-            Add(new CmdBan());
-            Add(new CmdJoin());
-            Add(new CmdLeave());
-            Add(new CmdSteamID());
-            Add(new CmdCleverbot());
-            Add(new CmdMakeMeASandwich());
+            //SCREW THIS SHIT LETS USE REFLECTION (http://stackoverflow.com/questions/79693/getting-all-types-in-a-namespace-via-reflection)
+
+            string cmdNamespace = "AgopBot.Commands";
+
+            var q = from t in Assembly.GetExecutingAssembly().GetTypes()
+                    where t.IsClass && t.Namespace == cmdNamespace
+                    select t;
+
+            List<Type> commandTypes = q.ToList(); //This list contains every class in the AgopBot.Commands namespace
+
+            foreach (Type t in commandTypes)
+            {
+                if (t.BaseType == typeof(Command)) //Might include some rubbish classes
+                {
+                    Add((Command)Activator.CreateInstance(t));
+                    Console.WriteLine(string.Format("Added command {0}", t));
+                }
+            }
         }
     }
 }
