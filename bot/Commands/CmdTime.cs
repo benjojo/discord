@@ -9,7 +9,7 @@ namespace AgopBot.Commands
 
         public override void Use(SteamID room, SteamID sender, string[] args)
         {
-            Chat.Send(room, "The time is: " + DateTime.UtcNow.ToShortTimeString() + " (UTC/GMT)");
+            Chat.Send(room, "The time is: " + DateTime.UtcNow.ToShortTimeString() + " (UTC)");
         }
     }
 }

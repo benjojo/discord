@@ -1,7 +1,12 @@
 ﻿using System;
+using System.IO;
+using System.Net;
+using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using System.Timers;
 using SteamKit2;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace AgopBot
 {
@@ -75,6 +80,73 @@ namespace AgopBot
                     Send(Room, "No command specified.");
                 else
                     ChatCommands.HandleChatCommand(Room, Sender, args);
+            }
+
+            Regex r = new Regex(@"(?<Protocol>\w+):\/\/(?<Domain>[\w@][\w.:@]+)\/?[\w\.?=%&=\-@/$,]*");
+
+            Match m = r.Match(Message);
+            if (m.Success) 
+            {
+                if (m.Groups["Domain"].Value.EndsWith("youtube.com"))
+                {
+                    Regex getvRegex = new Regex(@"youtu(?:\.be|be\.com)/(?:.*v(?:/|=)|(?:.*/)?)([a-zA-Z0-9-_]+)");
+                    Match YTMatch = getvRegex.Match(m.Value);
+
+                    if (YTMatch.Success)
+                    {
+                        string vid = YTMatch.Groups[1].Value;
+                        string api = "http://www.youtube.com/get_video_info?video_id=" + vid;
+
+                        WebRequest request = WebRequest.Create(api);
+                        HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+
+                        Stream dataStream = response.GetResponseStream();
+                        StreamReader reader = new StreamReader(dataStream);
+                        string responseFromServer = reader.ReadToEnd();
+
+                        string name = "Unknown";
+                        string creator = "Probably a copyrighted video.";
+
+                        foreach (var item in responseFromServer.Split(new[] { '&' }, StringSplitOptions.RemoveEmptyEntries))
+                        {
+                            var tokens = item.Split(new[] { '=' }, StringSplitOptions.RemoveEmptyEntries);
+                            if (tokens.Length < 2)
+                                continue;
+                            var paramName = tokens[0];
+                            var paramValue = tokens[1];
+
+                            if (paramName == "title")
+                                name = paramValue;
+                            if (paramName == "author")
+                                creator = paramValue;
+                        }
+
+                        name = Uri.UnescapeDataString(name.Replace('+', ' '));
+                        creator = Uri.UnescapeDataString(creator.Replace('+', ' '));
+                        
+                        Send(Room, "YouTube: " + name + " - " + creator);
+                    }
+                }
+                if (m.Groups["Domain"].Value == "open.spotify.com")
+                {
+                    string api = "http://ws.spotify.com/lookup/1/.json?uri=spotify:track:" + m.Value.Substring(30);
+                    WebRequest request = WebRequest.Create(api);
+                    HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+
+                    Stream dataStream = response.GetResponseStream();
+                    StreamReader reader = new StreamReader(dataStream);
+                    string responseFromServer = reader.ReadToEnd();
+
+                    JObject token = JObject.Parse(responseFromServer);
+                    string name = token.SelectToken("track").SelectToken("name").ToObject<string>();
+                    string artist = token.SelectToken("track").SelectToken("artists").First.SelectToken("name").ToObject<string>();
+
+                    Send(Room, "Spotify: '" + name + "' by " + artist);
+
+                    reader.Close();
+                    dataStream.Close();
+                    response.Close();
+                }
             }
         }
 
