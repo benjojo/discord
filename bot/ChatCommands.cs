@@ -23,16 +23,8 @@ namespace AgopBot
 
     internal static class ChatCommands
     {
-        class Request
-        {
-            public SteamID Sender { get; set; }
-            public DateTime Time { get; set; }
-            public int KickThreshold { get; set; }
-        }
-
         private static List<Command> commands = new List<Command>();
         private static System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
-        private static List<Request> recentRequests = new List<Request>();
 
         public static void Add(Command cmd)
         {
@@ -48,24 +40,6 @@ namespace AgopBot
         public static void HandleChatCommand(SteamID room, SteamID sender, string[] args)
         {
             Command command = Find(args[0]);
-
-            recentRequests.RemoveAll(r => DateTime.Now.Subtract(r.Time).TotalSeconds > 3); //Remove recent requests if they were more than 3 seconds ago
-
-            Request recent = recentRequests.FirstOrDefault(r => r.Sender == sender);
-            if (recent != null) //This user has already sent a command in the last 3 seconds: Increase kick threshold!
-            {
-                recent.KickThreshold++;
-                recent.Time = DateTime.Now;
-
-                if (recent.KickThreshold > 3) //If warned enough, kick!
-                {
-                    //TODO: Actually kick!
-                    Chat.Send(room, string.Format("{0} has been kicked for spam.", Steam.Friends.GetFriendPersonaName(sender)));
-                    return;
-                }
-            }
-            else
-                recentRequests.Add(new Request { Sender = sender, Time = DateTime.Now });
 
             if (command == null)
                 Chat.Send(room, "Sorry '" + Steam.Friends.GetFriendPersonaName(sender) + "'! The command '" + args[0] + "' is unrecognized.");
