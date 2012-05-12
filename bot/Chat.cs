@@ -44,12 +44,14 @@ namespace AgopBot
                 HandlePersonaStateChange((SteamFriends.PersonaStateCallback)msg);
             if (msg.IsType<SteamFriends.ChatMemberInfoCallback>())
                 HandleChatMemberInfoCallback((SteamFriends.ChatMemberInfoCallback)msg);
+            if (msg.IsType<SteamFriends.ChatActionResultCallback>())
+                HandleChatActionResultCallback((SteamFriends.ChatActionResultCallback)msg);
         }
 
         public static void HandleLogin(SteamUser.LoginKeyCallback msg)
         {
             Steam.Friends.SetPersonaName("AgopBot");
-            Steam.Friends.SetPersonaState(EPersonaState.Online);
+            Steam.Friends.SetPersonaState((EPersonaState)6); // Looking to Play - hehe.
             //Join(103582791430091926);
             Join(103582791433166824);
         }
@@ -171,6 +173,12 @@ namespace AgopBot
 
         public static void HandlePersonaStateChange(SteamFriends.PersonaStateCallback msg)
         {
+            Console.WriteLine("PersonaStateChange: " + msg.Name + ", " + msg.State + ", " + msg.FriendID + ", " + msg.OnlineSessionInstances);
+        }
+
+        public static void HandleChatActionResultCallback(SteamFriends.ChatActionResultCallback msg)
+        {
+            Console.WriteLine("ChatActionResult: " + msg.ChatterID + ", " + msg.Result);
         }
     }
 }
