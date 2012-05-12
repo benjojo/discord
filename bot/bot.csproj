@@ -68,6 +68,7 @@
     <Compile Include="Commands\CmdQuit.cs" />
     <Compile Include="Commands\CmdSteamID.cs" />
     <Compile Include="Commands\CmdTime.cs" />
+    <Compile Include="Commands\CmdDefine.cs" />
     <Compile Include="ConfigDefinition.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
