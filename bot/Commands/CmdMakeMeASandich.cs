@@ -7,7 +7,7 @@ namespace AgopBot
     {
         public CmdMakeMeASandwich() : base("make") { }
 
-        public override void Use(SteamID Room, SteamID Sender, string[] args, bool isAdmin)
+        public override void Use(SteamID Room, SteamID Sender, string[] args)
         {
             Chat.Send(Room, "Okay.");
         }

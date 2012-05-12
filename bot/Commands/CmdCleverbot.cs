@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using ChatterBotAPI;
 using SteamKit2;
 
@@ -15,11 +16,15 @@ namespace AgopBot.Commands
         {
         }
 
-        public override void Use(SteamID room, SteamID sender, string[] args, bool isAdmin)
+        public override void Use(SteamID room, SteamID sender, string[] args)
         {
-            //Should this be in a seperate thread?
-            string response = cleverBotSession.Think(string.Join(" ", args));
-            Chat.Send(room, response);
+            Thread T = new Thread(() =>
+                                      {
+                                          string response = cleverBotSession.Think(string.Join(" ", args));
+                                          Chat.Send(room, response);
+                                      });
+
+            T.Start();
         }
     }
 }

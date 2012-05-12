@@ -7,10 +7,9 @@ namespace AgopBot.Commands
     {
         public CmdJoin() : base("join") { }
 
-        public override void Use(SteamID room, SteamID sender, string[] args, bool isAdmin)
+        public override void Use(SteamID room, SteamID sender, string[] args)
         {
-            if (isAdmin)
-            {
+            if (Util.IsAdmin(sender))
                 switch (args[0])
                 {
                     case "fpp":
@@ -23,9 +22,8 @@ namespace AgopBot.Commands
                         Chat.Join(new SteamID(args[0]));
                         break;
                 }
-            }
             else
-                Chat.Send(room, "nope.avi");
+                Chat.Send(room, "I can't let you do that " + Steam.Friends.GetFriendPersonaName(sender) + "!");
         }
     }
 }

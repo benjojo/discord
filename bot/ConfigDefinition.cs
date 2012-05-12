@@ -9,6 +9,7 @@ namespace AgopBot
 {
     class ConfigDefinition
     {
+        public string BotName { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }
         public string AuthCode { get; set; }

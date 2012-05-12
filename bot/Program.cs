@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using System.Threading;
 
 namespace AgopBot
@@ -12,7 +13,7 @@ namespace AgopBot
             SQL.DB.Initialize("localhost", "agop", "root", "root");
           
             Steam.Username = Configurator.Config.Username;
-            Steam.Password = Configurator.Config.Password;
+            Steam.Password = Encoding.UTF8.GetString(Convert.FromBase64String(Configurator.Config.Password)); //Password is stored in Base64
             Steam.AuthCode = Configurator.Config.AuthCode;
             Steam.Connect();
 
