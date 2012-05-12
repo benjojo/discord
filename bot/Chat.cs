@@ -17,6 +17,7 @@ namespace AgopBot
             new SteamID("65232862"), //Naarkie
             new SteamID("36593391"), //Matt
             new SteamID("30067610") //Dlaor
+            //Blk, Benjojo and Austech, fill yourselves in or send me your SteamIDs ("sudo id" in chat)
         };
 
         public Chat()
