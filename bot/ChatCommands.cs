@@ -55,16 +55,17 @@ namespace AgopBot
             if (recent != null) //This user has already sent a command in the last 3 seconds: Increase kick threshold!
             {
                 recent.KickThreshold++;
+                recent.Time = DateTime.Now;
 
-                if (recent.KickThreshold > 4) //If warned enough, kick!
+                if (recent.KickThreshold > 3) //If warned enough, kick!
                 {
                     //TODO: Actually kick!
                     Chat.Send(room, string.Format("{0} has been kicked for spam.", Steam.Friends.GetFriendPersonaName(sender)));
                     return;
                 }
             }
-
-            recentRequests.Add(new Request { Sender = sender, Time = DateTime.Now });
+            else
+                recentRequests.Add(new Request { Sender = sender, Time = DateTime.Now });
 
             if (command == null)
                 Chat.Send(room, "Sorry '" + Steam.Friends.GetFriendPersonaName(sender) + "'! The command '" + args[0] + "' is unrecognized.");
