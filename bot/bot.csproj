@@ -62,6 +62,7 @@
     <Compile Include="Commands\CmdInfo.cs" />
     <Compile Include="Commands\CmdJoin.cs" />
     <Compile Include="Commands\CmdKick.cs" />
+    <Compile Include="Commands\CmdLeave.cs" />
     <Compile Include="Commands\CmdMakeMeASandich.cs" />
     <Compile Include="Commands\CmdPing.cs" />
     <Compile Include="Commands\CmdQuit.cs" />
