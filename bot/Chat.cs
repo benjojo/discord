@@ -60,7 +60,7 @@ namespace AgopBot
 
         public static void HandleLogin(SteamUser.LoginKeyCallback msg)
         {
-            Steam.Friends.SetPersonaName("AgopBot");
+            Steam.Friends.SetPersonaName(String.IsNullOrWhiteSpace(Configurator.Config.BotName) ? "AgopBot" : Configurator.Config.BotName);
             Steam.Friends.SetPersonaState((EPersonaState)6); // Looking to Play - hehe.
             //Join(103582791430091926);
             Join(103582791433166824);
@@ -95,7 +95,8 @@ namespace AgopBot
                 if (recent.KickThreshold > 4) //If warned enough, kick!
                 {
                     //TODO: Actually kick!
-                    Chat.Send(Room, string.Format("{0} has been kicked for spam.", Steam.Friends.GetFriendPersonaName(Sender)));
+                    
+                    Send(Room, string.Format("{0} has been kicked for spam.", Steam.Friends.GetFriendPersonaName(Sender)));
                     return;
                 }
             }
