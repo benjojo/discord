@@ -1,22 +1,22 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Text.RegularExpressions;
-using System.Collections.Generic;
 using System.Timers;
-using SteamKit2;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using SteamKit2;
 
 namespace AgopBot
 {
-    class Chat : ICallbackHandler
+    internal class Chat : ICallbackHandler
     {
         public static List<SteamID> Admins = new List<SteamID>
         {
-            new SteamID("65232862"), //Naarkie
-            new SteamID("36593391"), //Matt
-            new SteamID("30067610") //Dlaor
+            new SteamID("STEAM_0:0:32616431"), //Naarkie
+            new SteamID("STEAM_0:1:18296695"), //Matt
+            new SteamID("STEAM_0:0:15033805") //Dlaor
         };
 
         public Chat()
@@ -89,11 +89,15 @@ namespace AgopBot
                     else
                         ChatCommands.HandleChatCommand(Room, Sender, args, false);
             }
+            if (Message == "make me a sandwich")
+            {
+                Send(Room, "What? Make it yourself.");
+            }
 
             Regex r = new Regex(@"(?<Protocol>\w+):\/\/(?<Domain>[\w@][\w.:@]+)\/?[\w\.?=%&=\-@/$,]*");
 
             Match m = r.Match(Message);
-            if (m.Success) 
+            if (m.Success)
             {
                 if (m.Groups["Domain"].Value.EndsWith("youtube.com"))
                 {
@@ -131,7 +135,7 @@ namespace AgopBot
 
                         name = Uri.UnescapeDataString(name.Replace('+', ' '));
                         creator = Uri.UnescapeDataString(creator.Replace('+', ' '));
-                        
+
                         Send(Room, "YouTube: " + name + " - " + creator);
                     }
                 }

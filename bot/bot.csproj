@@ -35,6 +35,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ChatterBotAPI">
+      <HintPath>lib\ChatterBotAPI.dll</HintPath>
+    </Reference>
     <Reference Include="mysql.data, Version=6.1.6.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL" />
     <Reference Include="Newtonsoft.Json">
       <HintPath>lib\Newtonsoft.Json.dll</HintPath>
@@ -54,7 +57,12 @@
     <Compile Include="Chat.cs" />
     <Compile Include="ChatCommands.cs" />
     <Compile Include="Commands\CmdAfk.cs" />
+    <Compile Include="Commands\CmdBan.cs" />
+    <Compile Include="Commands\CmdCleverbot.cs" />
     <Compile Include="Commands\CmdInfo.cs" />
+    <Compile Include="Commands\CmdJoin.cs" />
+    <Compile Include="Commands\CmdKick.cs" />
+    <Compile Include="Commands\CmdMakeMeASandich.cs" />
     <Compile Include="Commands\CmdPing.cs" />
     <Compile Include="Commands\CmdQuit.cs" />
     <Compile Include="Commands\CmdSteamID.cs" />

@@ -26,6 +26,7 @@ namespace AgopBot
     internal static class ChatCommands
     {
         static List<Command> commands = new List<Command>();
+        static System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
 
         public static void Add(Command cmd)
         {
@@ -45,7 +46,12 @@ namespace AgopBot
             if (command == null)
                 Chat.Send(room, "Sorry '" + Steam.Friends.GetFriendPersonaName(sender) + "'! The command '" + args[0] + "' is unrecognized.");
             else
+            {
+                stopwatch.Start();
                 command.Use(room, sender, args.Skip(1).ToArray(), isAdmin);
+                Console.WriteLine("Command \"" + command.Name + "\" took " + stopwatch.ElapsedMilliseconds + " ms to execute.");
+                stopwatch.Reset();
+            }
         }
 
         public static void InitAll()
@@ -55,6 +61,12 @@ namespace AgopBot
             Add(new CmdTime());
             Add(new CmdQuit());
             Add(new CmdPing());
+            Add(new CmdKick());
+            Add(new CmdBan());
+            Add(new CmdJoin());
+            Add(new CmdSteamID("id"));
+            Add(new CmdCleverbot());
+            Add(new CmdMakeMeASandwich());
         }
     }
 }
