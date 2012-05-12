@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Text.RegularExpressions;
+using System.Linq;
 using System.Timers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -12,6 +13,15 @@ namespace AgopBot
 {
     internal class Chat : ICallbackHandler
     {
+        class Request
+        {
+            public SteamID Sender { get; set; }
+            public DateTime Time { get; set; }
+            public int KickThreshold { get; set; }
+        }
+
+        private static List<Request> recentRequests = new List<Request>();
+
         public Chat()
         {
             ChatCommands.InitAll();
@@ -73,9 +83,30 @@ namespace AgopBot
             String Message = msg.Message;
 
             Console.WriteLine(Steam.Friends.GetFriendPersonaName(Sender) + ": " + Message);
-            if (Message.StartsWith("sudo"))
+
+            recentRequests.RemoveAll(r => DateTime.Now.Subtract(r.Time).TotalSeconds > 2); //Remove recent requests if they were more than 3 seconds ago
+
+            Request recent = recentRequests.FirstOrDefault(r => r.Sender == Sender);
+            if (recent != null) //This user has already sent a command in the last 2 seconds: Increase kick threshold!
             {
-                string[] args = Message.Substring(4).Trim().Split(' ');
+                recent.KickThreshold++;
+                recent.Time = DateTime.Now;
+
+                if (recent.KickThreshold > 4) //If warned enough, kick!
+                {
+                    //TODO: Actually kick!
+                    Chat.Send(Room, string.Format("{0} has been kicked for spam.", Steam.Friends.GetFriendPersonaName(Sender)));
+                    return;
+                }
+            }
+            else
+                recentRequests.Add(new Request { Sender = Sender, Time = DateTime.Now });
+
+            int sudocmd = Message.StartsWith("sudo") ? 4 : (Message.StartsWith("su") ? 2 : 0);
+
+            if (sudocmd != 0)
+            {
+                string[] args = Message.Substring(sudocmd).Trim().Split(' ');
                 if ((args.Length == 0))
                     Send(Room, "No command specified.");
                 else
