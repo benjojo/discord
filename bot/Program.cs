@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using SteamKit2;
 
 namespace AgopBot
 {
@@ -11,18 +7,17 @@ namespace AgopBot
     {
         static void Main(string[] args)
         {
+            Configurator.Load();
+            
             SQL.DB.Initialize("localhost", "agop", "root", "root");
           
-            Steam.Username = args[0];
-            Steam.Password = args[1];
-            Steam.AuthCode = "";
+            Steam.Username = Configurator.Config.Username;
+            Steam.Password = Configurator.Config.Password;
+            Steam.AuthCode = Configurator.Config.AuthCode;
             Steam.Connect();
 
             Console.TreatControlCAsInput = false;
-            Console.CancelKeyPress += (object s, ConsoleCancelEventArgs e) =>
-            {
-                Steam.Shutdown();
-            };
+            Console.CancelKeyPress += (s, e) => Steam.Shutdown();
 
             while (!Steam.ShouldQuit)
             {

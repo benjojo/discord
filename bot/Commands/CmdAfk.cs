@@ -2,15 +2,15 @@
 using System.Diagnostics;
 using SteamKit2;
 
-namespace AgopBot
+namespace AgopBot.Commands
 {
     public class CmdAfk : Command
     {
-        public CmdAfk(string name) : base(name) { }
+        public CmdAfk() : base("afk") { }
 
-        public override void Use(SteamID Room, SteamID Sender, string[] args, bool isAdmin)
+        public override void Use(SteamID room, SteamID sender, string[] args, bool isAdmin)
         {
-            Chat.Send(Room, Steam.Friends.GetFriendPersonaName(Sender) + " is now AFK!");
+            Chat.Send(room, Steam.Friends.GetFriendPersonaName(sender) + " is now AFK!");
         }
 
         /* We could possibly do with a method of hooking into the chat from here. */

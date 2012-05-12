@@ -1,15 +1,15 @@
 ﻿using System;
 using SteamKit2;
 
-namespace AgopBot
+namespace AgopBot.Commands
 {
     public class CmdTime : Command
     {
-        public CmdTime(string name) : base(name) { }
+        public CmdTime() : base("time") { }
 
-        public override void Use(SteamID Room, SteamID Sender, string[] args, bool isAdmin)
+        public override void Use(SteamID room, SteamID Sender, string[] args, bool isAdmin)
         {
-            Chat.Send(Room, "The time is: " + DateTime.UtcNow.ToShortTimeString() + " (UTC/GMT)");
+            Chat.Send(room, "The time is: " + DateTime.UtcNow.ToShortTimeString() + " (UTC)");
         }
     }
 }

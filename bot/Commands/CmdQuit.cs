@@ -1,11 +1,11 @@
 ﻿using System;
 using SteamKit2;
 
-namespace AgopBot
+namespace AgopBot.Commands
 {
     public class CmdQuit : Command
     {
-        public CmdQuit(string name) : base(name) { }
+        public CmdQuit() : base("quit") { }
 
         public override void Use(SteamID Room, SteamID Sender, string[] args, bool isAdmin)
         {
