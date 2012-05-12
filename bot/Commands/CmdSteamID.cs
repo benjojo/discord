@@ -5,9 +5,9 @@ namespace AgopBot
 {
     public class CmdSteamID : Command
     {
-        public CmdSteamID(string name) : base(name) { }
+        public CmdSteamID() : base("id") { }
 
-        public override void Use(SteamID Room, SteamID Sender, string[] args, bool isAdmin)
+        public override void Use(SteamID Room, SteamID Sender, string[] args)
         {
             Chat.Send(Room, Steam.Friends.GetFriendPersonaName(Sender) + ": " + Sender.AccountID.ToString());
         }

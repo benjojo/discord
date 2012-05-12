@@ -10,14 +10,12 @@ namespace AgopBot
     {
         public string Name { get; private set; }
 
-        public bool isAdmin; //someone encapsulate this im shit at that
-
         public Command(string name)
         {
             Name = name;
         }
 
-        public virtual void Use(SteamID room, SteamID sender, string[] args, bool isAdmin)
+        public virtual void Use(SteamID room, SteamID sender, string[] args)
         {
             Chat.Send(room, "Sorry '" + Steam.Friends.GetFriendPersonaName(sender) + "'! The command '" + args[1] + "' has no use.");
         }
@@ -39,7 +37,7 @@ namespace AgopBot
             return commands.FirstOrDefault(cmd => cmd.Name == name);
         }
 
-        public static void HandleChatCommand(SteamID room, SteamID sender, string[] args, bool isAdmin)
+        public static void HandleChatCommand(SteamID room, SteamID sender, string[] args)
         {
             Command command = Find(args[0]);
 
@@ -48,7 +46,7 @@ namespace AgopBot
             else
             {
                 stopwatch.Start();
-                command.Use(room, sender, args.Skip(1).ToArray(), isAdmin);
+                command.Use(room, sender, args.Skip(1).ToArray());
                 Console.WriteLine("Command \"" + command.Name + "\" took " + stopwatch.ElapsedMilliseconds + " ms to execute.");
                 stopwatch.Reset();
             }
@@ -64,7 +62,8 @@ namespace AgopBot
             Add(new CmdKick());
             Add(new CmdBan());
             Add(new CmdJoin());
-            Add(new CmdSteamID("id"));
+            Add(new CmdLeave());
+            Add(new CmdSteamID());
             Add(new CmdCleverbot());
             Add(new CmdMakeMeASandwich());
         }

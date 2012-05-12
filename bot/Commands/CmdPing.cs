@@ -7,7 +7,7 @@ namespace AgopBot.Commands
     {
         public CmdPing() : base("ping") { }
 
-        public override void Use(SteamID room, SteamID sender, string[] args, bool isAdmin)
+        public override void Use(SteamID room, SteamID sender, string[] args)
         {
             try
             {

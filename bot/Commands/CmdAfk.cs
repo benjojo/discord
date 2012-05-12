@@ -8,7 +8,7 @@ namespace AgopBot.Commands
     {
         public CmdAfk() : base("afk") { }
 
-        public override void Use(SteamID room, SteamID sender, string[] args, bool isAdmin)
+        public override void Use(SteamID room, SteamID sender, string[] args)
         {
             Chat.Send(room, Steam.Friends.GetFriendPersonaName(sender) + " is now AFK!");
         }

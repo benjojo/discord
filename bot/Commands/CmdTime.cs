@@ -7,7 +7,7 @@ namespace AgopBot.Commands
     {
         public CmdTime() : base("time") { }
 
-        public override void Use(SteamID room, SteamID Sender, string[] args, bool isAdmin)
+        public override void Use(SteamID room, SteamID Sender, string[] args)
         {
             Chat.Send(room, "The time is: " + DateTime.UtcNow.ToShortTimeString() + " (UTC)");
         }

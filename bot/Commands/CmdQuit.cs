@@ -7,15 +7,15 @@ namespace AgopBot.Commands
     {
         public CmdQuit() : base("quit") { }
 
-        public override void Use(SteamID Room, SteamID Sender, string[] args, bool isAdmin)
+        public override void Use(SteamID room, SteamID sender, string[] args)
         {
-            if (isAdmin)
+            if (Util.IsAdmin(sender))
             {
                 Steam.Shutdown();
                 Environment.Exit(20);
             }
             else
-                Chat.Send(Room, "I can't let you do that " + Steam.Friends.GetFriendPersonaName(Sender) + "!");
+                Chat.Send(room, "I can't let you do that " + Steam.Friends.GetFriendPersonaName(sender) + "!");
         }
     }
 }
