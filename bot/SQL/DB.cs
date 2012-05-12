@@ -55,5 +55,10 @@ namespace AgopBot.SQL
                 CloseConnection();
             }
         }
+
+        public static string EscapeString(string query)
+        {
+            return MySqlHelper.EscapeString(query);
+        }
     }
 }

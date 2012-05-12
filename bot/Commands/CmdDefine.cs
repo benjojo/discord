@@ -38,12 +38,12 @@ namespace AgopBot.Commands
             json = json.Replace(@"\x3c", "<");
             json = json.Replace(@"\x3e", ">");
             json = json.Replace(@"\x3d", "=");
-            json = json.Replace(@"\x22", "'"); //Actually " but whatever
+            json = json.Replace(@"\x22", "\""); //Actually " but whatever
             json = json.Replace(@"\x26", "&");
             json = json.Replace(@"\x27", "'");
             json = json.Replace(@"\xad", "");
-            json = json.Replace(@"&quot;", "'"); //Actually " but whatever
-            json = json.Replace(@"&#39;", "'"); //Actually " but whatever
+            json = json.Replace(@"&quot;", "\""); //Actually " but whatever
+            json = json.Replace(@"&#39;", "\""); //Actually " but whatever
 
             if (!json.Contains("Invalid query:"))
             {

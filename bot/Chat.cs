@@ -85,6 +85,8 @@ namespace AgopBot
 
             Console.WriteLine(Steam.Friends.GetFriendPersonaName(Sender) + ": " + Message);
 
+            SQL.DB.QueryNoReturn(string.Format(@"INSERT INTO chat (uid, message) VALUES({0}, '{1}');", Sender.ConvertToUInt64(), SQL.DB.EscapeString(Message)));
+
             recentRequests.RemoveAll(r => DateTime.Now.Subtract(r.Time).TotalSeconds > 2); //Remove recent requests if they were more than 3 seconds ago
 
             Request recent = recentRequests.FirstOrDefault(r => r.Sender == Sender);
@@ -95,8 +97,7 @@ namespace AgopBot
 
                 if (recent.KickThreshold > 4) //If warned enough, kick!
                 {
-                    //TODO: Actually kick!
-                    
+                    Steam.Friends.KickChatMember(Room, Sender);
                     Send(Room, string.Format("{0} has been kicked for spam.", Steam.Friends.GetFriendPersonaName(Sender)));
                     return;
                 }
