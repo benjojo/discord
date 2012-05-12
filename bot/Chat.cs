@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
-using System.Linq;
 using System.Timers;
+using aQueryLib;
+using aQueryLib.aQueryLib;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SteamKit2;
@@ -13,14 +16,18 @@ namespace AgopBot
 {
     internal class Chat : ICallbackHandler
     {
-        class Request
+        private class Request
         {
             public SteamID Sender { get; set; }
+
             public DateTime Time { get; set; }
+
             public int KickThreshold { get; set; }
         }
 
         private static List<Request> recentRequests = new List<Request>();
+        public static SteamID bfpp = new SteamID(103582791433166824);
+        public static SteamID fpp = new SteamID(103582791430091926);
 
         public Chat()
         {
@@ -95,7 +102,7 @@ namespace AgopBot
                 if (recent.KickThreshold > 4) //If warned enough, kick!
                 {
                     //TODO: Actually kick!
-                    
+
                     Send(Room, string.Format("{0} has been kicked for spam.", Steam.Friends.GetFriendPersonaName(Sender)));
                     return;
                 }
@@ -116,7 +123,8 @@ namespace AgopBot
                 return; // We don't want it parsing URLs and what not.
             }
 
-            try {
+            try
+            {
                 Regex r = new Regex(@"(?<Protocol>\w+):\/\/(?<Domain>[\w@][\w.:@]+)\/?[\w\.?=%&=\-@/$,]*");
 
                 Match m = r.Match(Message);
@@ -184,7 +192,8 @@ namespace AgopBot
                     }
                 }
             }
-            catch(Exception ex) {
+            catch (Exception ex)
+            {
                 Console.WriteLine("Something went wrong with the URL parsing!");
                 Console.WriteLine(ex.Message);
             }
@@ -205,7 +214,22 @@ namespace AgopBot
 
         public static void HandlePersonaStateChange(SteamFriends.PersonaStateCallback msg)
         {
-            Console.WriteLine("PersonaStateChange: " + msg.Name + ", " + msg.State + ", " + msg.FriendID + ", " + msg.OnlineSessionInstances);
+            if (msg.GameServerIP.ToString() != "0.0.0.0")
+            {
+                GameServer boop = new GameServer(msg.GameServerIP.ToString(), int.Parse(msg.GameServerPort.ToString()), GameType.Source);
+                boop.QueryServer();
+                /*foreach (DictionaryEntry d in boop.Parameters)
+                {
+                    Console.WriteLine(string.Format("{0}-{1}", d.Key, d.Value));
+                }*/
+                foreach (Player p in boop.Players)
+                {
+                    if (p.Name == msg.Name)
+                    {
+                        //PUT SHIT HERE
+                    }
+                }
+            }
         }
 
         public static void HandleChatActionResultCallback(SteamFriends.ChatActionResultCallback msg)
