@@ -79,41 +79,43 @@ namespace AgopBot
 
         public static void HandleChatMessage(SteamFriends.ChatMsgCallback msg)
         {
-            SteamID Sender = msg.ChatterID;
-            SteamID Room = msg.ChatRoomID;
-            String Message = msg.Message;
+            SteamID sender = msg.ChatterID;
+            SteamID room = msg.ChatRoomID;
+            String message = msg.Message;
 
-            Console.WriteLine(Steam.Friends.GetFriendPersonaName(Sender) + ": " + Message);
+            Console.WriteLine(Steam.Friends.GetFriendPersonaName(sender) + ": " + message);
 
-            SQL.DB.QueryNoReturn(string.Format(@"INSERT INTO chat (uid, message) VALUES({0}, '{1}');", Sender.ConvertToUInt64(), SQL.DB.EscapeString(Message)));
+            SQL.DB.QueryNoReturn(string.Format(@"INSERT INTO chat (uid, message) VALUES({0}, '{1}');", sender.ConvertToUInt64(), SQL.DB.EscapeString(message)));
 
-            recentRequests.RemoveAll(r => DateTime.Now.Subtract(r.Time).TotalSeconds > 2); //Remove recent requests if they were more than 3 seconds ago
+            recentRequests.RemoveAll(r => DateTime.Now.Subtract(r.Time).TotalSeconds > 2); //Remove recent requests if they were more than 2 seconds ago
 
-            Request recent = recentRequests.FirstOrDefault(r => r.Sender == Sender);
+            Request recent = recentRequests.FirstOrDefault(r => r.Sender == sender);
             if (recent != null) //This user has already sent a command in the last 2 seconds: Increase kick threshold!
             {
                 recent.KickThreshold++;
                 recent.Time = DateTime.Now;
 
-                if (recent.KickThreshold > 4) //If warned enough, kick!
+                if (!Util.IsAdmin(recent.Sender) && recent.KickThreshold > 4) //When given enough warnings, and not an admin, KICK THE BASTARD
                 {
-                    Steam.Friends.KickChatMember(Room, Sender);
-                    Send(Room, string.Format("{0} has been kicked for spam.", Steam.Friends.GetFriendPersonaName(Sender)));
+                    Steam.Friends.KickChatMember(room, sender);
+                    Send(room, string.Format("{0} has been kicked for spam.", Steam.Friends.GetFriendPersonaName(sender)));
+
+                    recent.KickThreshold = 0; //Don't kick again!
                     return;
                 }
             }
             else
-                recentRequests.Add(new Request { Sender = Sender, Time = DateTime.Now });
+                recentRequests.Add(new Request { Sender = sender, Time = DateTime.Now });
 
-            int sudocmd = Message.StartsWith("sudo") ? 4 : (Message.StartsWith("su") ? 2 : 0);
+            int sudocmd = message.StartsWith("sudo") ? 4 : (message.StartsWith("su") ? 2 : 0);
 
             if (sudocmd != 0)
             {
-                string[] args = Message.Substring(sudocmd).Trim().Split(' ');
+                string[] args = message.Substring(sudocmd).Trim().Split(' ');
                 if ((args.Length == 0))
-                    Send(Room, "No command specified.");
+                    Send(room, "No command specified.");
                 else
-                    ChatCommands.HandleChatCommand(Room, Sender, args);
+                    ChatCommands.HandleChatCommand(room, sender, args);
 
                 return; // We don't want it parsing URLs and what not.
             }
@@ -123,7 +125,7 @@ namespace AgopBot
                 try {
                     Regex r = new Regex(@"(?<Protocol>\w+):\/\/(?<Domain>[\w@][\w.:@]+)\/?[\w\.?=%&=\-@/$,]*");
 
-                    Match m = r.Match(Message);
+                    Match m = r.Match(message);
                     if (m.Success)
                     {
                         if (m.Groups["Domain"].Value.EndsWith("youtube.com"))
@@ -163,7 +165,7 @@ namespace AgopBot
                                 name = Uri.UnescapeDataString(name.Replace('+', ' '));
                                 creator = Uri.UnescapeDataString(creator.Replace('+', ' '));
 
-                                Send(Room, "YouTube: " + name + " - " + creator);
+                                Send(room, "YouTube: " + name + " - " + creator);
                             }
                         }
                         if (m.Groups["Domain"].Value == "open.spotify.com")
@@ -180,7 +182,7 @@ namespace AgopBot
                             string name = token.SelectToken("track").SelectToken("name").ToObject<string>();
                             string artist = token.SelectToken("track").SelectToken("artists").First.SelectToken("name").ToObject<string>();
 
-                            Send(Room, "Spotify: '" + name + "' by " + artist);
+                            Send(room, "Spotify: '" + name + "' by " + artist);
 
                             reader.Close();
                             dataStream.Close();
@@ -197,8 +199,8 @@ namespace AgopBot
 
             T.Start();
 
-            if (Message == "make me a sandwich")
-                Send(Room, "What? Make it yourself.");
+            if (message == "make me a sandwich")
+                Send(room, "What? Make it yourself.");
         }
 
         private static void HandleChatMemberInfoCallback(SteamFriends.ChatMemberInfoCallback msg)
