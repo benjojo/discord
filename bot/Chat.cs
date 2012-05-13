@@ -85,7 +85,8 @@ namespace AgopBot
 
             Console.WriteLine(Steam.Friends.GetFriendPersonaName(sender) + ": " + message);
 
-            SQL.DB.QueryNoReturn(string.Format(@"INSERT INTO chat (uid, message) VALUES({0}, '{1}');", sender.ConvertToUInt64(), SQL.DB.EscapeString(message)));
+            if (Configurator.Config.EnableMySQL)
+                SQL.DB.QueryNoReturn(string.Format(@"INSERT INTO chat (uid, message) VALUES({0}, '{1}');", sender.ConvertToUInt64(), SQL.DB.EscapeString(message)));
 
             recentRequests.RemoveAll(r => DateTime.Now.Subtract(r.Time).TotalSeconds > 2); //Remove recent requests if they were more than 2 seconds ago
 

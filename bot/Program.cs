@@ -10,7 +10,8 @@ namespace AgopBot
         {
             Configurator.Load();
             
-            SQL.DB.Initialize("localhost", "agop", "root", "root");
+            if (Configurator.Config.EnableMySQL)
+                SQL.DB.Initialize("localhost", "agop", "root", "root");
           
             Steam.Username = Configurator.Config.Username;
             Steam.Password = Encoding.UTF8.GetString(Convert.FromBase64String(Configurator.Config.Password)); //Password is stored in Base64
