@@ -13,6 +13,7 @@ namespace AgopBot
         public string AuthCode { get; set; }
 
         public bool EnableMySQL { get; set; }
+        public string SolutionFile { get; set; }
     }
 
     class Configurator
