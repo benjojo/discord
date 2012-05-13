@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Threading;
 using MySql.Data.MySqlClient;
+using System.Data;
 
 namespace AgopBot.SQL
 {
@@ -27,7 +29,8 @@ namespace AgopBot.SQL
         public static bool OpenConnection()
         {
             try {
-                connection.Open();
+                if (connection.State != ConnectionState.Open)
+                    connection.Open();
                 return true;
             } catch (MySqlException e) {
                 Console.WriteLine("MYSQL: " + e.Message);
@@ -38,7 +41,8 @@ namespace AgopBot.SQL
         public static bool CloseConnection()
         {
             try {
-                connection.Close();
+                if (connection.State != ConnectionState.Closed)
+                    connection.Close();
                 return true;
             } catch (MySqlException e) {
                 Console.WriteLine("MYSQL: " + e.Message);
@@ -48,12 +52,16 @@ namespace AgopBot.SQL
 
         public static void QueryNoReturn(string query)
         {
-            if (OpenConnection())
+            Thread T = new Thread(() =>
             {
-                MySqlCommand cmd = new MySqlCommand(query, connection);
-                cmd.ExecuteNonQuery();
-                CloseConnection();
-            }
+                if (OpenConnection())
+                {
+                    MySqlCommand cmd = new MySqlCommand(query, connection);
+                    cmd.ExecuteNonQuery();
+                    CloseConnection();
+                }
+            });
+            T.Start();
         }
 
         public static string EscapeString(string query)

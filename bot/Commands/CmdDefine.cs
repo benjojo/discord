@@ -16,9 +16,12 @@ namespace AgopBot.Commands
         public override void Use(SteamID room, SteamID sender, string[] args)
         {
             string word = String.Join(" ", args);
-            Chat.Send(room, string.Format("Looking up '{0}', one second...", word));
 
-            Thread T = new Thread(() => Chat.Send(room, Lookup(word)));
+            Thread T = new Thread(() =>
+            {
+                try { Chat.Send(room, Lookup(word)); }
+                catch (Exception ex) { Chat.Send(room, ex.Message); }
+            });
             T.Start();
         }
 
@@ -38,12 +41,12 @@ namespace AgopBot.Commands
             json = json.Replace(@"\x3c", "<");
             json = json.Replace(@"\x3e", ">");
             json = json.Replace(@"\x3d", "=");
-            json = json.Replace(@"\x22", "\""); //Actually " but whatever
+            json = json.Replace(@"\x22", "'"); //Actually " but whatever
             json = json.Replace(@"\x26", "&");
             json = json.Replace(@"\x27", "'");
             json = json.Replace(@"\xad", "");
-            json = json.Replace(@"&quot;", "\""); //Actually " but whatever
-            json = json.Replace(@"&#39;", "\""); //Actually " but whatever
+            json = json.Replace(@"&quot;", "'"); //Actually " but whatever
+            json = json.Replace(@"&#39;", "'"); //Actually " but whatever
 
             if (!json.Contains("Invalid query:"))
             {

@@ -107,7 +107,7 @@ namespace AgopBot
             else
                 recentRequests.Add(new Request { Sender = sender, Time = DateTime.Now });
 
-            int sudocmd = message.StartsWith("sudo") ? 4 : (message.StartsWith("su") ? 2 : 0);
+            int sudocmd = message.StartsWith("sudo") ? 4 : (message.StartsWith("su ") ? 2 : 0);
 
             if (sudocmd != 0)
             {
@@ -128,7 +128,22 @@ namespace AgopBot
                     Match m = r.Match(message);
                     if (m.Success)
                     {
-                        if (m.Groups["Domain"].Value.EndsWith("youtube.com"))
+                        if (m.Value.EndsWith(".mp3"))
+                        {
+                            /*
+                            Uri uri = new Uri(m.Value);
+                            using (var client = new System.Net.Sockets.TcpClient(uri.Host, uri.Port))
+                            {
+                                using (System.Net.Sockets.NetworkStream n = client.GetStream())
+                                {
+                                    uri.PathAndQuery
+                                }
+                            }
+
+                            Send(room, "MP3 File: We'll finish this later.");
+                             */
+                        }
+                        else if (m.Groups["Domain"].Value.EndsWith("youtube.com"))
                         {
                             Regex getvRegex = new Regex(@"youtu(?:\.be|be\.com)/(?:.*v(?:/|=)|(?:.*/)?)([a-zA-Z0-9-_]+)");
                             Match YTMatch = getvRegex.Match(m.Value);
@@ -168,7 +183,7 @@ namespace AgopBot
                                 Send(room, "YouTube: " + name + " - " + creator);
                             }
                         }
-                        if (m.Groups["Domain"].Value == "open.spotify.com")
+                        else if (m.Groups["Domain"].Value == "open.spotify.com")
                         {
                             string api = "http://ws.spotify.com/lookup/1/.json?uri=spotify:track:" + m.Value.Substring(30);
                             WebRequest request = WebRequest.Create(api);
