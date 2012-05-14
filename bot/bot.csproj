@@ -78,6 +78,8 @@
     <Compile Include="Commands\CmdUpdate.cs" />
     <Compile Include="Commands\CmdRestart.cs" />
     <Compile Include="Commands\CmdVote.cs" />
+    <Compile Include="Commands\CmdSpellCheck.cs" />
+    <Compile Include="Commands\CmdAnagram.cs" />
     <Compile Include="ConfigDefinition.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -86,6 +88,9 @@
     <Compile Include="Util.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="enable1.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="lib\3rd party.txt" />
     <Content Include="lib\Classless.Hasher.dll" />
     <Content Include="lib\gpl.txt" />
