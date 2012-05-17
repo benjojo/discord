@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using IrcDotNet;
 using SteamKit2;
@@ -43,6 +43,7 @@ namespace AgopBot.Commands
                                                                               //Message("Topic: " + e2.Channel.Topic); //Nothing happens!
                                                                               //e2.Channel.GetTopic(); //This causes TopicChanged to be called twice!
 
+                                                                              e2.Channel.UsersListReceived += (sender3, e3) => Message("Users: " + string.Join(", ", e2.Channel.Users.OrderBy(u => u.User.NickName).Select(u => u.User.IsOperator ? "@" : "" + u.User.NickName))); //OH GOD MY EYES
                                                                               e2.Channel.TopicChanged += (sender3, e3) => Message("Topic: " + e2.Channel.Topic);
                                                                               e2.Channel.UserKicked += (sender3, e3) => Message(string.Format("{0} was kicked from {1}. {2}", e3.ChannelUser.User.NickName, e2.Channel.Name, e2.Comment));
                                                                               e2.Channel.UserJoined += (sender3, e3) => Message(string.Format("{0} joined {1}. {2}", e3.ChannelUser.User.NickName, e2.Channel.Name, e2.Comment));
@@ -56,7 +57,7 @@ namespace AgopBot.Commands
                                      };
 
             _client.Disconnected += (sender, e) => Message("Disconnected.");
-            _client.Registered += (sender, e) => Message(string.Format("Registered, joining {0}...", IRCChannel));
+            _client.Registered += (sender, e) => Message(string.Format("Registered. Joining {0}...", IRCChannel));
 
             using (var connectedEvent = new ManualResetEventSlim(false))
             {
@@ -105,6 +106,11 @@ namespace AgopBot.Commands
 
             _client.Dispose();
         }
+
+        public static void Send(string message)
+        {
+            _client.LocalUser.SendMessage(IRCChannel, message);
+        }
     }
 
     public class CmdIRC : Command
@@ -114,12 +120,15 @@ namespace AgopBot.Commands
         public override void Use(SteamID room, SteamID sender, string[] args)
         {
             string subcommand = args[0];
+            string arg = string.Join(" ", args.Skip(1));
             switch (subcommand)
             {
                 case "start":
-                    IRCMaster.Start(room); break;
+                    if (Util.IsAdmin(sender)) IRCMaster.Start(room); break;
                 case "stop":
                     if (Util.IsAdmin(sender)) IRCMaster.Stop(); break;
+                case "send":
+                    if (Util.IsAdmin(sender)) IRCMaster.Send(arg); break;
             }
         }
     }
