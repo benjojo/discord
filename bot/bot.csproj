@@ -80,6 +80,7 @@
     <Compile Include="Commands\CmdVote.cs" />
     <Compile Include="Commands\CmdSpellCheck.cs" />
     <Compile Include="Commands\CmdAnagram.cs" />
+    <Compile Include="Commands\CmdName.cs" />
     <Compile Include="ConfigDefinition.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
