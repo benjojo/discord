@@ -9,6 +9,9 @@ namespace AgopBot.Commands
 {
     class IRCMaster
     {
+        private const string IRCServer = "irc.freenode.net";
+        private const string IRCChannel = "#fpprogrammers";
+
         private static bool _started;
         private static IrcClient _client;
         private static SteamID _room;
@@ -22,27 +25,25 @@ namespace AgopBot.Commands
 
             _started = true;
 
-            const string ircServer = "irc.freenode.net";
-            const string ircChannel = "#fpprogrammers";
-
             _client = new IrcClient();
-            _client.FloodPreventer = new IrcStandardFloodPreventer(4, 2000);
+           // _client.FloodPreventer = new IrcStandardFloodPreventer(4, 2000);
             _client.Connected += (sender, e) =>
                                      {
                                          Message("Connected.");
 
                                          var c = (IrcClient)sender;
-                                         c.Channels.Join(ircChannel);
+                                         c.Channels.Join(IRCChannel);
 
                                          c.LocalUser.NoticeReceived += (sender2, e2) => Message(string.Format("{0}: {1}", e2.Source.Name, e2.Text));
                                          c.LocalUser.MessageReceived += (sender2, e2) => Message(string.Format("Received PM from {0}: {1}", e2.Source.Name, e2.Text));
                                          c.LocalUser.JoinedChannel += (sender2, e2) =>
                                                                           {
-                                                                              Message(string.Format("Joined {0}. ({1})", e2.Channel.Name, e2.Comment));
+                                                                              Message(string.Format("Joined {0}. {1}", e2.Channel.Name, e2.Comment));
+                                                                              Message("Topic: " + e2.Channel.Topic);
 
-                                                                              e2.Channel.UserKicked += (sender3, e3) => Message(string.Format("{0} was kicked from {1}. ({2})", e3.ChannelUser.User.NickName, e2.Channel.Name, e2.Comment));
-                                                                              e2.Channel.UserJoined += (sender3, e3) => Message(string.Format("{0} joined {1}. ({2})", e3.ChannelUser.User.NickName, e2.Channel.Name, e2.Comment));
-                                                                              e2.Channel.UserLeft += (sender3, e3) => Message(string.Format("{0} left {1}. ({2})", e3.ChannelUser.User.NickName, e2.Channel.Name, e2.Comment));
+                                                                              e2.Channel.UserKicked += (sender3, e3) => Message(string.Format("{0} was kicked from {1}. {2}", e3.ChannelUser.User.NickName, e2.Channel.Name, e2.Comment));
+                                                                              e2.Channel.UserJoined += (sender3, e3) => Message(string.Format("{0} joined {1}. {2}", e3.ChannelUser.User.NickName, e2.Channel.Name, e2.Comment));
+                                                                              e2.Channel.UserLeft += (sender3, e3) => Message(string.Format("{0} left {1}. {2}", e3.ChannelUser.User.NickName, e2.Channel.Name, e2.Comment));
                                                                               e2.Channel.MessageReceived += SendIRC;
                                                                               e2.Channel.NoticeReceived += (sender3, e3) => Message(string.Format("{0}: {1}", e3.Source.Name, e3.Text));
                                                                           };
@@ -50,6 +51,7 @@ namespace AgopBot.Commands
                                          c.LocalUser.LeftChannel += (sender2, e2) => Message(string.Format("Left {0}. ({1})", e2.Channel.Name, e2.Comment));
 
                                      };
+
             _client.Disconnected += (sender, e) => Message("Disconnected.");
             _client.Registered += (sender, e) => Message("Registered.");
 
@@ -59,18 +61,18 @@ namespace AgopBot.Commands
 
                 Message("Connecting...");
 
-                _client.Connect(ircServer, false, new IrcUserRegistrationInfo
+                _client.Connect(IRCServer, false, new IrcUserRegistrationInfo
                                                       {
                                                           NickName = "AGOPBOT",
                                                           UserName = "AGOPBOAT",
                                                           Password = "AGOPVOMIT",
-                                                           RealName = "Agopbot Shirinian"
+                                                          RealName = "Agopbot Shirinian"
                                                       });
 
                 if (!connectedEvent.Wait(10000))
                 {
                     _client.Dispose();
-                    Message(string.Format("Connection to {0} timed out.", ircServer));
+                    Message(string.Format("Connection to {0} timed out.", IRCServer));
                 }
             }
         }
@@ -79,13 +81,13 @@ namespace AgopBot.Commands
         {
             Steam.Friends.SetPersonaName(String.IsNullOrWhiteSpace(Configurator.Config.BotName) ? "AgopBot" : Configurator.Config.BotName);
 
-            Timer t = new Timer(s => Chat.Send(_room, "[IRC] " + text), null, 200, Timeout.Infinite); //Slight delay to allow for name change
+            Timer t = new Timer(s => Chat.Send(_room, "[IRC] " + text), null, 300, Timeout.Infinite); //Slight delay to allow for name change
         }
 
         private static void SendIRC(object sender, IrcMessageEventArgs e)
         {
             Steam.Friends.SetPersonaName("*" + e.Source.Name);
-            Timer t = new Timer(s => Chat.Send(_room, e.Text), null, 200, Timeout.Infinite); //Slight delay to allow for name change
+            Timer t = new Timer(s => Chat.Send(_room, e.Text), null, 300, Timeout.Infinite); //Slight delay to allow for name change
         }
 
         public static void Stop()
@@ -95,7 +97,11 @@ namespace AgopBot.Commands
 
             _started = false;
 
-            _client.Quit("Nap time");
+            string leaveMessage = "STEAM > IRC";
+
+            _client.Channels.Leave(new List<string> { IRCChannel }, leaveMessage);
+            _client.Quit(leaveMessage);
+
             _client.Dispose();
         }
     }
@@ -112,7 +118,7 @@ namespace AgopBot.Commands
                 case "start":
                     IRCMaster.Start(room); break;
                 case "stop":
-                    IRCMaster.Stop(); break;
+                    if (Util.IsAdmin(sender)) IRCMaster.Stop(); break;
             }
         }
     }

@@ -42,9 +42,7 @@ namespace AgopBot
         {
             Command command = Find(args[0]);
 
-            if (command == null)
-                Chat.Send(room, "Sorry '" + Steam.Friends.GetFriendPersonaName(sender) + "'! The command '" + args[0] + "' is unrecognized.");
-            else
+            if (command != null)
             {
                 stopwatch.Start();
                 command.Use(room, sender, args.Skip(1).ToArray());
