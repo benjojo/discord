@@ -44,6 +44,10 @@
     <Reference Include="ICSharpCode.SharpZipLib">
       <HintPath>lib\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
+    <Reference Include="IrcDotNet, Version=0.4.1.37777, Culture=neutral, PublicKeyToken=44f6d157e750246b, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>lib\IrcDotNet.dll</HintPath>
+    </Reference>
     <Reference Include="mysql.data, Version=6.1.6.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL" />
     <Reference Include="Newtonsoft.Json">
       <HintPath>lib\Newtonsoft.Json.dll</HintPath>
@@ -81,6 +85,7 @@
     <Compile Include="Commands\CmdSpellCheck.cs" />
     <Compile Include="Commands\CmdAnagram.cs" />
     <Compile Include="Commands\CmdName.cs" />
+    <Compile Include="Commands\CmdIRC.cs" />
     <Compile Include="ConfigDefinition.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -95,6 +100,7 @@
     <Content Include="lib\3rd party.txt" />
     <Content Include="lib\Classless.Hasher.dll" />
     <Content Include="lib\gpl.txt" />
+    <Content Include="lib\IrcDotNet.dll" />
     <Content Include="lib\lgpl.txt" />
     <Content Include="lib\Licence.txt" />
     <Content Include="lib\license.txt" />
