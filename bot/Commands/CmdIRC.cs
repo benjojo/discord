@@ -29,23 +29,26 @@ namespace AgopBot.Commands
            // _client.FloodPreventer = new IrcStandardFloodPreventer(4, 2000);
             _client.Connected += (sender, e) =>
                                      {
-                                         Message("Connected.");
+                                         Message("Connected. Waiting for registration...");
 
                                          var c = (IrcClient)sender;
                                          c.Channels.Join(IRCChannel);
 
-                                         c.LocalUser.NoticeReceived += (sender2, e2) => Message(string.Format("{0}: {1}", e2.Source.Name, e2.Text));
+                                         c.LocalUser.NoticeReceived += (sender2, e2) => Console.WriteLine(string.Format("Notice from {0}: {1}", e2.Source.Name, e2.Text));
                                          c.LocalUser.MessageReceived += (sender2, e2) => Message(string.Format("Received PM from {0}: {1}", e2.Source.Name, e2.Text));
                                          c.LocalUser.JoinedChannel += (sender2, e2) =>
                                                                           {
-                                                                              Message(string.Format("Joined {0}. {1}", e2.Channel.Name, e2.Comment));
-                                                                              Message("Topic: " + e2.Channel.Topic);
+                                                                              Message(string.Format("Joined {0} - IRC Spy Mode engaged. {1}", e2.Channel.Name, e2.Comment));
 
+                                                                              //Message("Topic: " + e2.Channel.Topic); //Nothing happens!
+                                                                              //e2.Channel.GetTopic(); //This causes TopicChanged to be called twice!
+
+                                                                              e2.Channel.TopicChanged += (sender3, e3) => Message("Topic: " + e2.Channel.Topic);
                                                                               e2.Channel.UserKicked += (sender3, e3) => Message(string.Format("{0} was kicked from {1}. {2}", e3.ChannelUser.User.NickName, e2.Channel.Name, e2.Comment));
                                                                               e2.Channel.UserJoined += (sender3, e3) => Message(string.Format("{0} joined {1}. {2}", e3.ChannelUser.User.NickName, e2.Channel.Name, e2.Comment));
                                                                               e2.Channel.UserLeft += (sender3, e3) => Message(string.Format("{0} left {1}. {2}", e3.ChannelUser.User.NickName, e2.Channel.Name, e2.Comment));
                                                                               e2.Channel.MessageReceived += SendIRC;
-                                                                              e2.Channel.NoticeReceived += (sender3, e3) => Message(string.Format("{0}: {1}", e3.Source.Name, e3.Text));
+                                                                              e2.Channel.NoticeReceived += (sender3, e3) => Console.WriteLine(string.Format("Notice from {0}: {1}", e3.Source.Name, e3.Text));
                                                                           };
 
                                          c.LocalUser.LeftChannel += (sender2, e2) => Message(string.Format("Left {0}. ({1})", e2.Channel.Name, e2.Comment));
@@ -53,13 +56,11 @@ namespace AgopBot.Commands
                                      };
 
             _client.Disconnected += (sender, e) => Message("Disconnected.");
-            _client.Registered += (sender, e) => Message("Registered.");
+            _client.Registered += (sender, e) => Message(string.Format("Registered, joining {0}...", IRCChannel));
 
             using (var connectedEvent = new ManualResetEventSlim(false))
             {
                 _client.Connected += (sender2, e2) => connectedEvent.Set();
-
-                Message("Connecting...");
 
                 _client.Connect(IRCServer, false, new IrcUserRegistrationInfo
                                                       {
