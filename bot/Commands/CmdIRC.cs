@@ -16,6 +16,8 @@ namespace AgopBot.Commands
         private static IrcClient _client;
         private static SteamID _room;
 
+        private static Queue<Tuple<string, string>> messageQueue;
+
         public static void Start(SteamID room)
         {
             _room = room;
@@ -24,6 +26,8 @@ namespace AgopBot.Commands
                 return;
 
             _started = true;
+
+            messageQueue = new Queue<Tuple<string, string>>();
 
             _client = new IrcClient();
            // _client.FloodPreventer = new IrcStandardFloodPreventer(4, 2000);
@@ -56,7 +60,12 @@ namespace AgopBot.Commands
 
                                      };
 
-            _client.Disconnected += (sender, e) => Message("Disconnected.");
+            _client.Disconnected += (sender, e) =>
+                                        {
+                                            Message("Disconnected for some reason.");
+                                            Stop();
+                                        };
+
             _client.Registered += (sender, e) => Message(string.Format("Registered. Joining {0}...", IRCChannel));
 
             using (var connectedEvent = new ManualResetEventSlim(false))
@@ -81,15 +90,18 @@ namespace AgopBot.Commands
 
         private static void Message(string text)
         {
-            Steam.Friends.SetPersonaName(String.IsNullOrWhiteSpace(Configurator.Config.BotName) ? "AgopBot" : Configurator.Config.BotName);
+            /*Steam.Friends.SetPersonaName(String.IsNullOrWhiteSpace(Configurator.Config.BotName) ? "AgopBot" : Configurator.Config.BotName);
 
-            Timer t = new Timer(s => Chat.Send(_room, "[IRC] " + text), null, 300, Timeout.Infinite); //Slight delay to allow for name change
+            Timer t = new Timer(s => Chat.Send(_room, "[IRC] " + text), null, 300, Timeout.Infinite); //Slight delay to allow for name change*/
+            messageQueue.Enqueue(new Tuple<string, string>(null, text));
         }
 
         private static void SendIRC(object sender, IrcMessageEventArgs e)
         {
-            Steam.Friends.SetPersonaName("*" + e.Source.Name);
-            Timer t = new Timer(s => Chat.Send(_room, e.Text), null, 300, Timeout.Infinite); //Slight delay to allow for name change
+            /*Steam.Friends.SetPersonaName("*" + e.Source.Name);
+            Timer t = new Timer(s => Chat.Send(_room, e.Text), null, 300, Timeout.Infinite); //Slight delay to allow for name change*/
+
+            messageQueue.Enqueue(new Tuple<string, string>(e.Source.Name, e.Text));
         }
 
         public static void Stop()
@@ -111,6 +123,11 @@ namespace AgopBot.Commands
         {
             _client.LocalUser.SendMessage(IRCChannel, message);
         }
+
+        public static void GetUsers()
+        {
+            Message("Users: " + string.Join(", ", _client.Users.OrderBy(u => u.NickName).Select(u => u.IsOperator ? "@" : "" + u.NickName))); //OH GOD MY EYES
+        }
     }
 
     public class CmdIRC : Command
@@ -124,11 +141,17 @@ namespace AgopBot.Commands
             switch (subcommand)
             {
                 case "start":
-                    if (Util.IsAdmin(sender)) IRCMaster.Start(room); break;
+                    if (Util.IsAdmin(sender)) IRCMaster.Start(room);
+                    break;
                 case "stop":
-                    if (Util.IsAdmin(sender)) IRCMaster.Stop(); break;
+                    if (Util.IsAdmin(sender)) IRCMaster.Stop();
+                    break;
+                case "users":
+                    IRCMaster.GetUsers();
+                    break;
                 case "send":
-                    if (Util.IsAdmin(sender)) IRCMaster.Send(arg); break;
+                    if (Util.IsAdmin(sender)) IRCMaster.Send(arg);
+                    break;
             }
         }
     }

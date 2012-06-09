@@ -86,6 +86,7 @@
     <Compile Include="Commands\CmdAnagram.cs" />
     <Compile Include="Commands\CmdName.cs" />
     <Compile Include="Commands\CmdIRC.cs" />
+    <Compile Include="Commands\CmdYoutube.cs" />
     <Compile Include="ConfigDefinition.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
